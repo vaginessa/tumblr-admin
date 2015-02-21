@@ -66,15 +66,14 @@ public class Sandbox
                 for(User follower : followers)
                 {
                     System.out.println(follower.getName() + " is now being passed Judgement.");
-                    for(Blog followersBlog :follower.getBlogs())
-                    {
-                        if(followedBlogMap.get(followersBlog.getName()) != null)
+
+                        if(!follower.isFollowing())
                         {
 
-                            System.out.println("Now Following "+follower.getName()+" blog named "+ followersBlog.getName());
-                            client.follow(followersBlog.getName()); //follow who has been following u
+                            System.out.println("Now Following "+follower.getName());
+                            client.follow(follower.getName()+".tumblr.com"); //follow who has been following u
                         }
-                    }
+
 
                 }
             }
