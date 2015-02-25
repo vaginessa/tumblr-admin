@@ -1,7 +1,7 @@
 package com.donkeigy.tumblr;
 
 import com.donkeigy.objects.util.ApplicationInfo;
-import com.donkeigy.util.OAuthConnection;
+import com.donkeigy.service.util.OAuthConnection;
 import com.tumblr.jumblr.JumblrClient;
 import com.tumblr.jumblr.types.Blog;
 import com.tumblr.jumblr.types.User;
@@ -23,7 +23,7 @@ public class Sandbox
     {
         ApplicationInfo info = new ApplicationInfo("pF5upteQMm5SBUFwE0vzDRS3OIqIKOokdfx0odY8aTLg60IkqJ", "iZ08fU69HR6VouBNaajVFF9FkaTW8p1lcG5qTFSDR4kJ1pU589");
 
-        JumblrClient client = new JumblrClient(info.getApiKey(),info.getApiSecret());
+
         OAuthConnection oAuthConnection = new OAuthConnection();
 
         oAuthConnection.initService(info);
@@ -40,7 +40,7 @@ public class Sandbox
             String verifier = br.readLine();
             oAuthConnection.retrieveAccessToken(verifier);
 
-
+            JumblrClient client = new JumblrClient(info.getApiKey(),info.getApiSecret());
             client.setToken(oAuthConnection.getAccessToken().getToken(), oAuthConnection.getAccessToken().getSecret());
 
             // Write the user's name

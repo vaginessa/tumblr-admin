@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.donkeigy.util;
+package com.donkeigy.service.util;
 
 
 
@@ -62,7 +62,7 @@ public class OAuthConnection
                 .provider(TumblrApi.class)
                 .apiKey(info.getApiKey())
                 .apiSecret(info.getApiSecret())
-                .callback("http://www.tumblr.com/connect/login_success.html")
+                .callback("http://localhost:8080/oauth/accessToken/retrieve")
                 .build();
     }
     public boolean connect()
@@ -99,6 +99,8 @@ public class OAuthConnection
         return authUrl;
         // retrieveAccessToken(in.nextLine());
     }
+
+
     public boolean retrieveAccessToken(String token)
     {
         verifier = new Verifier(token);
@@ -213,7 +215,14 @@ public class OAuthConnection
         this.apiSecret = apiSecret;
     }
 
- //   public OAuthToken getoAuthToken() {
+    public Token getRequestToken() {
+        return requestToken;
+    }
+
+    public void setRequestToken(Token requestToken) {
+        this.requestToken = requestToken;
+    }
+    //   public OAuthToken getoAuthToken() {
  //       return oAuthToken;
  //   }
 
