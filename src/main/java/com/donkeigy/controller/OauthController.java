@@ -28,16 +28,13 @@ public class OauthController
         OAuthConnection oAuthConnection = new OAuthConnection();
         oAuthConnection.initService(info);
 
-        JumblrClient client = new JumblrClient(info.getApiKey(),info.getApiSecret());
+
         Token requestToken = (Token) request.getSession().getAttribute("oauth-request-token");
         oAuthConnection.setRequestToken(requestToken);
          oAuthConnection.retrieveAccessToken(oauth_verifier);
 
-        client.setToken(oAuthConnection.getAccessToken().getToken(), oAuthConnection.getAccessToken().getSecret());
-        mav.addObject("oauth_verifier", oauth_verifier);
-        mav.addObject("oauth_token", oauth_token);
-        mav.addObject("user", client.user().getName());
-        mav.addObject("followers", client.userFollowing());
+        request.getSession().setAttribute("oauth-access-token", oAuthConnection.getAccessToken());
+
         // Write the user's name
         return mav;
     }

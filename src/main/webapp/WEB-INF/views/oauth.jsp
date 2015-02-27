@@ -12,6 +12,12 @@
 <html>
 <head>
     <title></title>
+    <script type="application/javascript">
+        window.onunload = refreshParent;
+        function refreshParent() {
+            window.opener.location.reload();
+        }
+    </script>
 </head>
 <body>
 Diamonds are forever!
@@ -19,10 +25,8 @@ ${oauth_verifier} <br/>
 
 ${oauth_token} <br />
 
-${user} <br />
 
-<c:forEach items="${followers}" var="item">
-    ${item.name}<br>
-</c:forEach>
+
+
 </body>
 </html>

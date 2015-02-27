@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="Tumblr Adminstrator:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="tumblr-administrator-1.0-SNAPSHOT.war">
+      <element id="artifact" artifact-name="Tumblr Adminstrator:war exploded" />
+    </root>
+  </artifact>
+</component>

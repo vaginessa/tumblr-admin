@@ -5,7 +5,12 @@ package com.donkeigy.controller;
  */
 
 import com.donkeigy.objects.util.ApplicationInfo;
+import com.donkeigy.objects.util.UserJSPBean;
 import com.donkeigy.service.util.OAuthConnection;
+import com.tumblr.jumblr.JumblrClient;
+import com.tumblr.jumblr.types.Blog;
+import com.tumblr.jumblr.types.User;
+import org.scribe.model.Token;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +20,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping(value="/login")
@@ -22,23 +31,65 @@ public class IndexController
 {
     @RequestMapping(value="/create", method= {RequestMethod.GET, RequestMethod.HEAD})
     public ModelAndView createPage(HttpServletRequest request) {
-        ModelAndView mav = new ModelAndView("login");
+
+
+        Token accessToken = (Token) request.getSession().getAttribute("oauth-access-token");
         ApplicationInfo info = new ApplicationInfo("pF5upteQMm5SBUFwE0vzDRS3OIqIKOokdfx0odY8aTLg60IkqJ", "iZ08fU69HR6VouBNaajVFF9FkaTW8p1lcG5qTFSDR4kJ1pU589");
-        OAuthConnection oAuthConnection = new OAuthConnection();
-        oAuthConnection.initService(info);
-        mav.addObject("url", oAuthConnection.retrieveAuthorizationUrl());
-        request.getSession().setAttribute("oauth-request-token", oAuthConnection.getRequestToken());
+        ModelAndView mav;
+        if(accessToken == null)
+        {
+
+            OAuthConnection oAuthConnection = new OAuthConnection();
+            mav = new ModelAndView("login");
+            oAuthConnection.initService(info);
+            mav.addObject("url", oAuthConnection.retrieveAuthorizationUrl());
+            request.getSession().setAttribute("oauth-request-token", oAuthConnection.getRequestToken());
+        }
+        else
+        {
+            mav = new ModelAndView("data");
+            JumblrClient client = new JumblrClient(info.getApiKey(),info.getApiSecret());
+            client.setToken(accessToken.getToken(), accessToken.getSecret());
+            List<UserJSPBean> followers = new LinkedList<UserJSPBean>();
+            User user = client.user();
+            for (Blog blog : user.getBlogs())
+            {
+
+                boolean running = true;
+                int offset = 0;
+                while(running)
+
+                {
+                    Map<String, Integer> options = new HashMap<String, Integer>();
+                    options.put("limit", 20);
+                    options.put("offset", offset);
+                    List<User> currentSetFollowers = blog.followers(options);
+                    for(User tempUser : currentSetFollowers)
+                    {
+                        followers.add(new UserJSPBean(tempUser));
+                    }
+
+                    if(currentSetFollowers.size() < 20 || followers.size() >= 200)
+                    {
+                        running = false;
+
+                    }
+                    offset = offset+20;
+
+                }
+
+
+
+            }
+
+            mav.addObject("user", client.user().getName());
+            mav.addObject("followers", followers);
+
+        }
         return mav;
+
+
     }
 
-    @RequestMapping(value="/create", method=RequestMethod.POST,
-            produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-  public String getGeneratedKey(@RequestBody String generatedKey)
-  {
-      String name = generatedKey;
 
-       return generatedKey;
-
-  }
 }
