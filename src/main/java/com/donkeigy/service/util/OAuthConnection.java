@@ -6,14 +6,21 @@ package com.donkeigy.service.util;
 
 
 
+import com.donkeigy.dao.interfaces.OAuthDAO;
+import com.donkeigy.objects.OAuthToken;
 import com.donkeigy.objects.util.ApplicationInfo;
+import com.tumblr.jumblr.JumblrClient;
+import com.tumblr.jumblr.types.User;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.TumblrApi;
 import org.scribe.builder.api.YahooApi;
 import org.scribe.exceptions.OAuthException;
 import org.scribe.model.*;
 import org.scribe.oauth.OAuthService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,7 +29,7 @@ import java.util.logging.Logger;
  * @author cedric
  */
 
-
+@Repository("oAuthConnection")
 public class OAuthConnection
 {
     private OAuthService service;
@@ -39,7 +46,8 @@ public class OAuthConnection
 
 
 
-   // private OAuthDAO oauthDAOImpl;
+    @Autowired
+    private OAuthDAO oauthDAOImpl;
 
     public OAuthConnection()
     {
@@ -68,21 +76,21 @@ public class OAuthConnection
     public boolean connect()
     {
 
-        //List<OAuthToken> prevList = oauthDAOImpl.getAllOAuth();
-        //if(prevList == null || prevList.isEmpty())
-        //{
+        List<OAuthToken> prevList = oauthDAOImpl.getAllOAuth();
+        if(prevList == null || prevList.isEmpty())
+        {
             return false;
 
-        //}
-        //else
-        //{
-        //    accessToken = new Token (prevList.get(0).getToken(),prevList.get(0).getSecret());
-        //    verifier = new Verifier(prevList.get(0).getVerifier());
-        //    oauthSessionHandle = prevList.get(0).getSessionHandle();
-        //    authorized = true;
-        //    return true;
+        }
+        else
+        {
+            accessToken = new Token (prevList.get(0).getToken(),prevList.get(0).getSecret());
+            verifier = new Verifier(prevList.get(0).getVerifier());
+            oauthSessionHandle = prevList.get(0).getSessionHandle();
+            authorized = true;
+            return true;
 
-        //}
+        }
     }
 
 
@@ -101,7 +109,7 @@ public class OAuthConnection
     }
 
 
-    public boolean retrieveAccessToken(String token)
+    public boolean retrieveAccessToken(String token, ApplicationInfo info)
     {
         verifier = new Verifier(token);
         // Trade the Request Token and Verfier for the Access Token
@@ -111,21 +119,23 @@ public class OAuthConnection
             accessToken = service.getAccessToken(requestToken, verifier);
             String fullResponse = accessToken.getRawResponse();
             System.out.println("[Raw Response] : " + fullResponse);
-
-
+            JumblrClient client = new JumblrClient(info.getApiKey(),info.getApiSecret());
+            client.setToken(accessToken.getToken(), accessToken.getSecret());
+            User user = client.user();
             // Gather the indices of the session handle
-            //int startIndex = fullResponse.indexOf("&oauth_session_handle=");
-            //int endIndex = fullResponse.indexOf("&oauth_authorization_expires_in", startIndex);
+           // int startIndex = fullResponse.indexOf("&oauth_session_handle=");
+            // int endIndex = fullResponse.indexOf("&oauth_authorization_expires_in", startIndex);
 
             //oauthSessionHandle = fullResponse.substring(startIndex + 22, endIndex);
             //System.out.println("[Session handle] :" + oauthSessionHandle);
 
-          //  OAuthToken temp = new OAuthToken();
-          //  temp.setVerifier(verifier.getValue());
-          //  temp.setToken(accessToken.getToken());
-          //  temp.setSecret(accessToken.getSecret());
-          //  temp.setSessionHandle(oauthSessionHandle);
-          //  oauthDAOImpl.saveOAuthToken(temp);
+           OAuthToken temp = new OAuthToken();
+            temp.setVerifier(verifier.getValue());
+            temp.setToken(accessToken.getToken());
+            temp.setSecret(accessToken.getSecret());
+            temp.setSessionHandle(oauthSessionHandle);
+            temp.setUsername(user.getName());
+            oauthDAOImpl.saveOAuthToken(temp);
             authorized = true;
             return true;
         }

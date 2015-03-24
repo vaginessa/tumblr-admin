@@ -6,11 +6,13 @@ package com.donkeigy.controller;
 
 import com.donkeigy.objects.util.ApplicationInfo;
 import com.donkeigy.objects.util.UserJSPBean;
+import com.donkeigy.service.OAuthService;
 import com.donkeigy.service.util.OAuthConnection;
 import com.tumblr.jumblr.JumblrClient;
 import com.tumblr.jumblr.types.Blog;
 import com.tumblr.jumblr.types.User;
 import org.scribe.model.Token;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,6 +31,9 @@ import java.util.Map;
 @RequestMapping(value="/login")
 public class IndexController
 {
+    @Autowired
+    OAuthService oAuthService;
+
     @RequestMapping(value="/create", method= {RequestMethod.GET, RequestMethod.HEAD})
     public ModelAndView createPage(HttpServletRequest request) {
 
@@ -43,6 +48,7 @@ public class IndexController
             mav = new ModelAndView("login");
             oAuthConnection.initService(info);
             mav.addObject("url", oAuthConnection.retrieveAuthorizationUrl());
+            mav.addObject("users", oAuthService.retrieveAllOAuthToken());
             request.getSession().setAttribute("oauth-request-token", oAuthConnection.getRequestToken());
         }
         else

@@ -11,8 +11,7 @@ import java.util.List;
  * Created by cedric on 11/18/14.
  */
 
-@Repository("oAuthDAO")
-@Transactional
+
 public interface OAuthDAO
 {
     public void saveOAuthToken(OAuthToken oat);

@@ -38,7 +38,7 @@ public class Sandbox
             System.out.println("Please type in verifier code:");
             BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
             String verifier = br.readLine();
-            oAuthConnection.retrieveAccessToken(verifier);
+            oAuthConnection.retrieveAccessToken(verifier, info);
 
             JumblrClient client = new JumblrClient(info.getApiKey(),info.getApiSecret());
             client.setToken(oAuthConnection.getAccessToken().getToken(), oAuthConnection.getAccessToken().getSecret());

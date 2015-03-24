@@ -4,6 +4,7 @@ import com.donkeigy.objects.util.ApplicationInfo;
 import com.donkeigy.service.util.OAuthConnection;
 import com.tumblr.jumblr.JumblrClient;
 import org.scribe.model.Token;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,19 +20,23 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping(value="/oauth")
 public class OauthController
 {
+
+    @Autowired
+    OAuthConnection oAuthConnection;
+
     @RequestMapping(value="/accessToken/retrieve", method= {RequestMethod.GET, RequestMethod.HEAD})
     public ModelAndView createPage(@RequestParam("oauth_verifier") String oauth_verifier,
                                           @RequestParam("oauth_token") String oauth_token, HttpServletRequest request)
     {
         ModelAndView mav = new ModelAndView("oauth");
         ApplicationInfo info = new ApplicationInfo("pF5upteQMm5SBUFwE0vzDRS3OIqIKOokdfx0odY8aTLg60IkqJ", "iZ08fU69HR6VouBNaajVFF9FkaTW8p1lcG5qTFSDR4kJ1pU589");
-        OAuthConnection oAuthConnection = new OAuthConnection();
+
         oAuthConnection.initService(info);
 
 
         Token requestToken = (Token) request.getSession().getAttribute("oauth-request-token");
         oAuthConnection.setRequestToken(requestToken);
-         oAuthConnection.retrieveAccessToken(oauth_verifier);
+         oAuthConnection.retrieveAccessToken(oauth_verifier, info);
 
         request.getSession().setAttribute("oauth-access-token", oAuthConnection.getAccessToken());
 

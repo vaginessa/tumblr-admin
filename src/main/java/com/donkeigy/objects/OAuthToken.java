@@ -15,6 +15,7 @@ import java.io.Serializable;
 public class OAuthToken implements Serializable
 {
     private int id;
+    private String username;
     private String token;
     private String verifier;
     private String secret;
@@ -59,7 +60,7 @@ public class OAuthToken implements Serializable
         this.secret = secret;
     }
 
-    @Column(name = "SESSIONHANDLE", length=500, nullable=false)
+    @Column(name = "SESSIONHANDLE", length=500, nullable=true)
     public String getSessionHandle() {
         return sessionHandle;
     }
@@ -69,5 +70,12 @@ public class OAuthToken implements Serializable
         this.sessionHandle = sessionHandle;
     }
 
+    @Column(name = "USERNAME", length=500, nullable=false)
+    public String getUsername() {
+        return username;
+    }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
 }
