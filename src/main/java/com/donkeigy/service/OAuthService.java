@@ -21,4 +21,8 @@ public class OAuthService
     {
         return oAuthDAO.getAllOAuth();
     }
+    public OAuthToken retrieveOAuthTokenbyId(int id)
+    {
+        return oAuthDAO.getOAuthTokenById(id);
+    }
 }

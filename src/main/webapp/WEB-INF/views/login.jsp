@@ -12,14 +12,15 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Registration</title>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-<!--<script type="application/javascript">
+<script type="application/javascript">
     function login()
     {
         var win = window.open("${url}", "windowname1", 'width=800, height=600'); // Remove this please
 
     }
 
-</script> -->
+
+</script>
 </head>
 <body>
 <table style="width:66%">
@@ -27,6 +28,7 @@
         <tr>
             <td>${item.username}</td>
             <td><a href="http://${item.username}.tumblr.com" target="_blank"> Visit Site </a> </td>
+            <td><a href="../login/admin/${item.id}"> Admin </a> </td>
         </tr>
     </c:forEach>
 

@@ -15,7 +15,7 @@
         function follow(blogid)
         {
             $.ajax({
-                url: "../followers/follow/"+blogid
+                url: "../../followers/follow/"+blogid+"/${tokenid}"
             })
             .then(function(data)
             {
@@ -25,7 +25,7 @@
         function unfollow(blogid)
         {
             $.ajax({
-                url: "../followers/unfollow/"+blogid
+                url: "../../followers/unfollow/"+blogid+"/${tokenid}"
             })
                     .then(function(data)
                     {
