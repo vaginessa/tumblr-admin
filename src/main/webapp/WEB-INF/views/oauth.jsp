@@ -20,10 +20,15 @@
     </script>
 </head>
 <body>
-Diamonds are forever!
-${oauth_verifier} <br/>
+<c:choose>
+    <c:when test="${isAdded}">
+        Diamonds are forever!
+    </c:when>
+    <c:otherwise>
+        Already Added!
+    </c:otherwise>
+</c:choose>
 
-${oauth_token} <br />
 
 
 

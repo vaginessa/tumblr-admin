@@ -36,8 +36,14 @@ public class OauthController
 
         Token requestToken = (Token) request.getSession().getAttribute("oauth-request-token");
         oAuthConnection.setRequestToken(requestToken);
-         oAuthConnection.retrieveAccessToken(oauth_verifier, info);
-
+        if(oAuthConnection.retrieveAccessToken(oauth_verifier, info))
+        {
+            mav.addObject("isAdded", true);
+        }
+        else
+        {
+            mav.addObject("isAdded", false);
+        }
         request.getSession().setAttribute("oauth-access-token", oAuthConnection.getAccessToken());
 
         // Write the user's name

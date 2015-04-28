@@ -16,6 +16,7 @@ public interface OAuthDAO
 {
     public void saveOAuthToken(OAuthToken oat);
     public OAuthToken getOAuthTokenById(int id);
+    public List<OAuthToken> getOAuthTokenByExample(OAuthToken example);
     public void deleteOAuthToken(OAuthToken oat);
     public List<OAuthToken> getAllOAuth();
 }

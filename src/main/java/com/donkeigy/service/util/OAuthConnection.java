@@ -128,16 +128,26 @@ public class OAuthConnection
 
             //oauthSessionHandle = fullResponse.substring(startIndex + 22, endIndex);
             //System.out.println("[Session handle] :" + oauthSessionHandle);
-
-           OAuthToken temp = new OAuthToken();
-            temp.setVerifier(verifier.getValue());
-            temp.setToken(accessToken.getToken());
-            temp.setSecret(accessToken.getSecret());
-            temp.setSessionHandle(oauthSessionHandle);
+            OAuthToken temp = new OAuthToken();
             temp.setUsername(user.getName());
-            oauthDAOImpl.saveOAuthToken(temp);
-            authorized = true;
-            return true;
+            if(oauthDAOImpl.getOAuthTokenByExample(temp).size() == 0)
+            {
+
+                temp.setVerifier(verifier.getValue());
+                temp.setToken(accessToken.getToken());
+                temp.setSecret(accessToken.getSecret());
+                temp.setSessionHandle(oauthSessionHandle);
+
+
+                oauthDAOImpl.saveOAuthToken(temp);
+                authorized = true;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
         }
         catch(OAuthException E)
         {
